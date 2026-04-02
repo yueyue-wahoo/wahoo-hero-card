@@ -1,5 +1,5 @@
-// Card dimensions: 45mm x 86mm at 300 DPI
-export const CARD_WIDTH = 531;
+// Card dimensions: 54mm x 86mm at 300 DPI
+export const CARD_WIDTH = 638;
 export const CARD_HEIGHT = 1016;
 
 // Layout regions

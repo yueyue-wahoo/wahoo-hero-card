@@ -230,8 +230,8 @@ export default function CardCompositor({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dataUrl = canvas.toDataURL("image/png");
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: [45, 86] });
-    doc.addImage(dataUrl, "PNG", 0, 0, 45, 86);
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: [54, 86] });
+    doc.addImage(dataUrl, "PNG", 0, 0, 54, 86);
     const sanitize = (s: string) =>
       s.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
     const namePart = riderName ? sanitize(riderName) : "athlete";
