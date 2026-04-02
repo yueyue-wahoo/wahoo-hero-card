@@ -2,9 +2,13 @@ import OpenAI, { toFile } from "openai";
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let _openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return _openai;
+}
 
 // Load the style reference image once at module level
 let styleReferenceBuffer: Buffer | null = null;
@@ -35,7 +39,7 @@ export async function cartoonifyImage(
     ? `\n\nADDITIONAL INSTRUCTIONS: ${options.customNote.trim()}`
     : "";
 
-  const response = await openai.images.edit({
+  const response = await getOpenAI().images.edit({
     model: "gpt-image-1.5",
     image: [photoFile, styleFile],
     prompt: `You are given two images:
