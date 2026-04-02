@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Wahoo 4DP Card Builder",
-  description: "Create your personalized Wahoo cycling trading card",
+  title: "Wahoo Athlete Profile Card",
+  description: "Create your personalized Wahoo athlete profile card",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-50 antialiased">{children}</body>
+      <body className="min-h-screen bg-black antialiased">{children}</body>
     </html>
   );
 }

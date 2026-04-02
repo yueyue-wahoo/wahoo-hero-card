@@ -48,7 +48,9 @@
       "Bash(mkdir:*)",
       "Bash(lsof -ti:3000)",
       "Bash(lsof -ti:3000,3001,3002,3003)",
-      "Skill(browse)"
+      "Skill(browse)",
+      "WebFetch(domain:www.wahoofitness.com)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('next:', p.dependencies.next\\)\")"
     ]
   }
 }

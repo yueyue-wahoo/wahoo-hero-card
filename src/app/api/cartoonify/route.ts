@@ -15,7 +15,7 @@ function saveDebugImages(original: string, cartoon?: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { image } = await request.json();
+    const { image, jerseyColor, customNote } = await request.json();
 
     if (!image) {
       return NextResponse.json(
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ cartoonImage: image });
     }
 
-    const cartoonImage = await cartoonifyImage(image);
+    const cartoonImage = await cartoonifyImage(image, { jerseyColor, customNote });
     saveDebugImages(image, cartoonImage);
     return NextResponse.json({ cartoonImage });
   } catch (error) {

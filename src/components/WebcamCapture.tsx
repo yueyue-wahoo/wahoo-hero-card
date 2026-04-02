@@ -5,7 +5,6 @@ import Webcam from "react-webcam";
 
 interface Props {
   onCapture: (imageBase64: string) => void;
-  onSkip: () => void;
 }
 
 const videoConstraints = {
@@ -14,7 +13,7 @@ const videoConstraints = {
   facingMode: "user",
 };
 
-export default function WebcamCapture({ onCapture, onSkip }: Props) {
+export default function WebcamCapture({ onCapture }: Props) {
   const webcamRef = useRef<Webcam>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
@@ -31,7 +30,6 @@ export default function WebcamCapture({ onCapture, onSkip }: Props) {
 
   const usePhoto = () => {
     if (capturedImage) {
-      // Strip the data URL prefix to get raw base64
       const base64 = capturedImage.replace(/^data:image\/\w+;base64,/, "");
       onCapture(base64);
     }
@@ -39,8 +37,8 @@ export default function WebcamCapture({ onCapture, onSkip }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-6 p-8">
-      <h2 className="text-2xl font-bold text-gray-900">Take Your Photo</h2>
-      <p className="text-gray-600">
+      <h2 className="text-2xl font-bold text-white">Take Your Photo</h2>
+      <p className="font-medium text-[#5FDFFF]">
         Position yourself in the frame for your trading card portrait
       </p>
 
@@ -61,7 +59,6 @@ export default function WebcamCapture({ onCapture, onSkip }: Props) {
               className="w-full h-full object-cover"
               mirrored
             />
-            {/* Portrait guide overlay */}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute inset-0 border-4 border-white/30 rounded-2xl" />
               <div className="absolute top-[15%] left-[25%] right-[25%] bottom-[10%] border-2 border-dashed border-white/40 rounded-full" />
@@ -74,32 +71,24 @@ export default function WebcamCapture({ onCapture, onSkip }: Props) {
         <div className="flex gap-4">
           <button
             onClick={retake}
-            className="px-6 py-3 text-gray-600 bg-gray-200 rounded-xl text-lg font-medium hover:bg-gray-300 transition-colors"
+            className="px-6 py-3 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl text-lg font-medium hover:bg-[#2A2A2A] transition-colors"
           >
             Retake
           </button>
           <button
             onClick={usePhoto}
-            className="px-6 py-3 text-white bg-blue-600 rounded-xl text-lg font-medium hover:bg-blue-700 transition-colors"
+            className="px-6 py-3 text-black bg-[#5FDFFF] rounded-xl text-lg font-bold hover:bg-[#47D4F7] transition-colors"
           >
             Use This Photo
           </button>
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-3">
-          <button
-            onClick={capture}
-            className="px-8 py-4 text-white bg-red-500 rounded-full text-xl font-bold hover:bg-red-600 transition-colors shadow-lg"
-          >
-            Take Photo
-          </button>
-          <button
-            onClick={onSkip}
-            className="text-gray-500 text-sm underline hover:text-gray-700 transition-colors"
-          >
-            Skip photo
-          </button>
-        </div>
+        <button
+          onClick={capture}
+          className="px-8 py-4 text-white bg-red-600 rounded-full text-xl font-bold hover:bg-red-700 transition-colors shadow-lg"
+        >
+          Take Photo
+        </button>
       )}
     </div>
   );

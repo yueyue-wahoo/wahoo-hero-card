@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useCallback } from "react";
+import jsPDF from "jspdf";
 import { FourDPProfile } from "@/types";
 import {
   CARD_WIDTH,
@@ -14,6 +15,7 @@ interface Props {
   riderName: string;
   cartoonImage: string | null;
   profile: FourDPProfile;
+  eventName?: string;
   onReady?: () => void;
 }
 
@@ -21,6 +23,7 @@ export default function CardCompositor({
   riderName,
   cartoonImage,
   profile,
+  eventName,
   onReady,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -87,11 +90,11 @@ export default function CardCompositor({
         const scale = Math.max(
           portraitWidth / img.width,
           portraitHeight / img.height
-        ) * 0.9; // 10% smaller
+        ) * 0.974; // further 3% reduction to ensure jersey logo fits
         const w = img.width * scale;
         const h = img.height * scale;
         const x = portraitLeft + (portraitWidth - w) / 2;
-        const y = portraitTop + (portraitHeight - h) / 2;
+        const y = portraitTop + (portraitHeight - h) / 2 - 20;
         ctx.drawImage(img, x, y, w, h);
         ctx.restore();
       } catch (e) {
@@ -226,17 +229,15 @@ export default function CardCompositor({
   const downloadCard = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = riderName
-        ? `${riderName.toLowerCase().replace(/\s+/g, "-")}-wahoo-4dp-card.png`
-        : "wahoo-4dp-card.png";
-      a.click();
-      URL.revokeObjectURL(url);
-    }, "image/png");
+    const dataUrl = canvas.toDataURL("image/png");
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: [45, 86] });
+    doc.addImage(dataUrl, "PNG", 0, 0, 45, 86);
+    const sanitize = (s: string) =>
+      s.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const namePart = riderName ? sanitize(riderName) : "athlete";
+    const eventPart = eventName?.trim() ? `-${sanitize(eventName)}` : "";
+    const year = new Date().getFullYear();
+    doc.save(`${namePart}-herocard${eventPart}-${year}.pdf`);
   };
 
   return (
@@ -250,7 +251,7 @@ export default function CardCompositor({
         onClick={downloadCard}
         className="px-8 py-4 text-white bg-blue-600 rounded-xl text-lg font-bold hover:bg-blue-700 transition-colors"
       >
-        Download PNG
+        Download PDF
       </button>
     </div>
   );

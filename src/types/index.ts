@@ -19,6 +19,7 @@ export type AccountMode = "demo" | "personal";
 export type AppStep =
   | "name"
   | "photo"
+  | "customize"
   | "quiz"
   | "assembling"
   | "done";

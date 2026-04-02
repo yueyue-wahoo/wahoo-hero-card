@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppStep, AccountMode, FourDPProfile } from "@/types";
 import RiderNameInput from "@/components/RiderNameInput";
 import WebcamCapture from "@/components/WebcamCapture";
+import JerseyCustomizer from "@/components/JerseyCustomizer";
 import AccountModeSelector from "@/components/AccountModeSelector";
 import CardCompositor from "@/components/CardCompositor";
 
@@ -17,13 +18,28 @@ export default function Home() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [cardReady, setCardReady] = useState(false);
+  const [pendingPhotoBase64, setPendingPhotoBase64] = useState<string | null>(null);
+  const [jerseyColor, setJerseyColor] = useState("black");
+  const [customNote, setCustomNote] = useState("");
+  const [eventName, setEventName] = useState("");
+
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)event-name=([^;]*)/);
+    if (match) setEventName(decodeURIComponent(match[1]));
+  }, []);
 
   const handleNameSubmit = (name: string) => {
     setRiderName(name);
     setStep("photo");
   };
 
-  const handlePhotoCapture = async (imageBase64: string) => {
+  const handlePhotoCaptured = (imageBase64: string) => {
+    setPendingPhotoBase64(imageBase64);
+    setStep("customize");
+  };
+
+  const handleCustomizeConfirm = async () => {
+    if (!pendingPhotoBase64) return;
     setStep("quiz");
     setCartoonLoading(true);
     setCartoonError(null);
@@ -32,7 +48,7 @@ export default function Home() {
       const res = await fetch("/api/cartoonify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: imageBase64 }),
+        body: JSON.stringify({ image: pendingPhotoBase64, jerseyColor, customNote }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to cartoonify");
@@ -86,20 +102,43 @@ export default function Home() {
     setProfileLoading(false);
     setProfileError(null);
     setCardReady(false);
+    setPendingPhotoBase64(null);
+    setJerseyColor("black");
+    setCustomNote("");
   };
 
   const photoSkipped = !cartoonImage && !cartoonLoading && !cartoonError;
   const isAssemblyReady = (cartoonImage || photoSkipped) && profile;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
+    <main className="flex min-h-screen flex-col items-center justify-start pt-12 p-4">
+      <header className="w-full max-w-lg mx-auto text-center mb-8">
+        <h1 className="text-4xl font-bold text-white uppercase tracking-tight">
+          Wahoo Athlete Profile
+        </h1>
+      </header>
+
       <div className="w-full max-w-lg mx-auto">
         {step === "name" && <RiderNameInput onSubmit={handleNameSubmit} />}
 
         {step === "photo" && (
           <WebcamCapture
-            onCapture={handlePhotoCapture}
-            onSkip={() => setStep("quiz")}
+            onCapture={handlePhotoCaptured}
+          />
+        )}
+
+        {step === "customize" && pendingPhotoBase64 && (
+          <JerseyCustomizer
+            capturedPhotoBase64={pendingPhotoBase64}
+            jerseyColor={jerseyColor}
+            customNote={customNote}
+            onJerseyColorChange={setJerseyColor}
+            onCustomNoteChange={setCustomNote}
+            onConfirm={handleCustomizeConfirm}
+            onRetake={() => {
+              setPendingPhotoBase64(null);
+              setStep("photo");
+            }}
           />
         )}
 
@@ -111,7 +150,7 @@ export default function Home() {
                 <img
                   src={`data:image/png;base64,${cartoonImage}`}
                   alt="Your cartoon portrait"
-                  className="w-40 h-40 rounded-2xl object-cover shadow-md bg-gray-100"
+                  className="w-40 h-40 rounded-2xl object-cover shadow-md bg-[#1C1C1C]"
                 />
               </div>
             )}
@@ -137,7 +176,7 @@ export default function Home() {
               <div className="text-center">
                 <button
                   onClick={() => setStep("photo")}
-                  className="text-blue-600 underline text-sm"
+                  className="text-[#5FDFFF] underline text-sm hover:text-[#47D4F7]"
                 >
                   Go back and retake photo
                 </button>
@@ -148,7 +187,7 @@ export default function Home() {
 
         {step === "assembling" && (
           <div className="flex flex-col items-center gap-6 p-8">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-white">
               Assembling Your Card...
             </h2>
             <div className="space-y-3">
@@ -177,6 +216,7 @@ export default function Home() {
                 riderName={riderName}
                 cartoonImage={cartoonImage}
                 profile={profile}
+                eventName={eventName}
                 onReady={() => {
                   setCardReady(true);
                   setStep("done");
@@ -194,7 +234,7 @@ export default function Home() {
 
         {step === "done" && profile && (
           <div className="flex flex-col items-center gap-6 p-8">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-white">
               Your Card is Ready!
             </h2>
 
@@ -202,12 +242,13 @@ export default function Home() {
               riderName={riderName}
               cartoonImage={cartoonImage}
               profile={profile}
+              eventName={eventName}
             />
 
             <div className="flex gap-4">
               <button
                 onClick={handleStartOver}
-                className="px-6 py-3 text-gray-600 bg-gray-200 rounded-xl text-lg font-medium hover:bg-gray-300 transition-colors"
+                className="px-6 py-3 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl text-lg font-medium hover:bg-[#2A2A2A] transition-colors"
               >
                 Start Over
               </button>
@@ -235,10 +276,10 @@ function StatusItem({
       {error ? (
         <span className="text-red-500 text-lg">&#10007;</span>
       ) : done ? (
-        <span className="text-green-500 text-lg">&#10003;</span>
+        <span className="text-[#5FDFFF] text-lg">&#10003;</span>
       ) : loading ? (
         <svg
-          className="animate-spin h-4 w-4 text-blue-500"
+          className="animate-spin h-4 w-4 text-[#5FDFFF]"
           viewBox="0 0 24 24"
           fill="none"
         >
@@ -257,9 +298,9 @@ function StatusItem({
           />
         </svg>
       ) : (
-        <span className="text-gray-300 text-lg">&#9744;</span>
+        <span className="text-gray-700 text-lg">&#9744;</span>
       )}
-      <span className={done ? "text-gray-700" : "text-gray-500"}>
+      <span className={done ? "text-white font-medium" : "text-gray-500"}>
         {label}
         {error && <span className="text-red-500 ml-1">— {error}</span>}
       </span>

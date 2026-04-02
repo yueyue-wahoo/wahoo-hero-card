@@ -17,7 +17,10 @@ function getStyleReference(): Buffer {
   return styleReferenceBuffer;
 }
 
-export async function cartoonifyImage(base64Image: string): Promise<string> {
+export async function cartoonifyImage(
+  base64Image: string,
+  options?: { jerseyColor?: string; customNote?: string }
+): Promise<string> {
   const imageBuffer = Buffer.from(base64Image, "base64");
   const photoFile = await toFile(imageBuffer, "photo.png", {
     type: "image/png",
@@ -25,6 +28,12 @@ export async function cartoonifyImage(base64Image: string): Promise<string> {
   const styleFile = await toFile(getStyleReference(), "style-reference.png", {
     type: "image/png",
   });
+
+  const jerseyColor = options?.jerseyColor ?? "black";
+  const clothingLine = `- Clothing: The person should be wearing a cycling jersey. Color: ${jerseyColor}. The word "Wahoo" should appear in white letters across the chest. Simple solid-color shapes with bold outlines, no fabric texture, no wrinkles, no complex folds.`;
+  const customNoteSection = options?.customNote?.trim()
+    ? `\n\nADDITIONAL INSTRUCTIONS: ${options.customNote.trim()}`
+    : "";
 
   const response = await openai.images.edit({
     model: "gpt-image-1.5",
@@ -43,7 +52,7 @@ STYLE (match IMAGE 2 exactly):
 - NO brushstrokes, texture, or noise on any surface
 - Skin: ONE warm, natural flat color per region — no blush, no chin shadow, no light/dark sides. The tone should be warm and natural, not pale or oversaturated
 - Hair: simple chunky solid-color shapes with perfectly smooth edges — ZERO flyaways, wisps, stray hairs, or frizz. Hair should look like clean vector paths, not painted
-- Clothing: render as simple dark solid shapes with bold outlines and minimal detail — no fabric texture, no wrinkles, no complex folds
+${clothingLine}
 - Overall: clean, crisp, digital vector illustration quality
 
 LIKENESS (critical):
@@ -61,7 +70,7 @@ DO NOT:
 - Include any background elements
 - Use thin or grey outlines — outlines must be bold and dark
 
-OUTPUT: Head and upper chest only, white/transparent background, no other elements.`,
+OUTPUT: Head and upper chest only, white/transparent background, no other elements.${customNoteSection}`,
     size: "1024x1024",
     quality: "high",
     background: "transparent",
