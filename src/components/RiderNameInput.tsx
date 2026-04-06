@@ -26,13 +26,17 @@ export default function RiderNameInput({ onSubmit }: Props) {
           id="rider-name"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value.slice(0, 15))}
+          maxLength={15}
           placeholder="Your name"
           className="w-full px-4 py-3 text-lg bg-[#141414] border-2 border-[#2A2A2A] rounded-xl text-white placeholder-gray-600 focus:border-[#5FDFFF] focus:outline-none"
           onKeyDown={(e) => {
             if (e.key === "Enter") onSubmit(name);
           }}
         />
+        <p className="mt-1.5 text-xs text-gray-500 text-right">
+          {name.length}/15
+        </p>
       </div>
 
       <div className="flex gap-4">

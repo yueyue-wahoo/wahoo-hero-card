@@ -18,7 +18,7 @@ export default function CardPreview({ riderName, cartoonImage, profile }: Props)
   const snailDimensions = useMemo(() => profileToSnailDimensions(profile), [profile]);
   return (
     <div
-      className="relative overflow-hidden bg-gray-100"
+      className="relative overflow-hidden bg-gray-50"
       style={{
         width: 265,
         height: 508,
@@ -28,7 +28,7 @@ export default function CardPreview({ riderName, cartoonImage, profile }: Props)
     >
       {/* Chevron background pattern */}
       <svg
-        className="absolute inset-0 w-full h-full opacity-10"
+        className="absolute inset-0 w-full h-full opacity-30"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
@@ -41,7 +41,7 @@ export default function CardPreview({ riderName, cartoonImage, profile }: Props)
             <polyline
               points="0,0 20,16 40,0"
               fill="none"
-              stroke="#888"
+              stroke="#B4B4B4"
               strokeWidth="3"
             />
           </pattern>
@@ -52,14 +52,14 @@ export default function CardPreview({ riderName, cartoonImage, profile }: Props)
       {/* Left sidebar - Wahoo logo */}
       <div
         className="absolute left-0 top-0 bottom-0 bg-gray-900 flex items-center justify-center"
-        style={{ width: 20 }}
+        style={{ width: 24 }}
       >
         <span
           className="text-white font-bold tracking-widest"
           style={{
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
-            fontSize: 8,
+            fontSize: 10,
             letterSpacing: 3,
           }}
         >
@@ -72,24 +72,28 @@ export default function CardPreview({ riderName, cartoonImage, profile }: Props)
         className="absolute right-0 top-0 bottom-0 bg-white/80 flex items-center justify-center"
         style={{ width: 20 }}
       >
-        {riderName && (
-          <span
-            className="text-gray-900 font-bold"
-            style={{
-              writingMode: "vertical-rl",
-              fontSize: 7,
-              letterSpacing: 1,
-            }}
-          >
-            {riderName.toUpperCase()}
-          </span>
-        )}
+        {riderName && (() => {
+          const truncated = riderName.toUpperCase().slice(0, 15);
+          const previewFontSize = truncated.length > 12 ? Math.round(7 * 12 / truncated.length) : 7;
+          return (
+            <span
+              className="text-gray-900 font-bold"
+              style={{
+                writingMode: "vertical-rl",
+                fontSize: previewFontSize,
+                letterSpacing: 1,
+              }}
+            >
+              {truncated}
+            </span>
+          );
+        })()}
       </div>
 
       {/* Portrait area */}
       <div
         className="absolute overflow-hidden"
-        style={{ left: 20, right: 20, top: 0, height: "55%" }}
+        style={{ left: 24, right: 20, top: 0, height: "55%" }}
       >
         <img
           src={`data:image/png;base64,${cartoonImage}`}
@@ -102,7 +106,7 @@ export default function CardPreview({ riderName, cartoonImage, profile }: Props)
       <div
         className="absolute bg-white rounded-t-xl shadow-lg"
         style={{
-          left: 20,
+          left: 24,
           right: 20,
           bottom: 0,
           top: "50%",

@@ -9,6 +9,7 @@ import AccountModeSelector from "@/components/AccountModeSelector";
 import CardCompositor from "@/components/CardCompositor";
 
 export default function Home() {
+  const [sessionChecked, setSessionChecked] = useState(false);
   const [step, setStep] = useState<AppStep>("name");
   const [riderName, setRiderName] = useState("");
   const [cartoonImage, setCartoonImage] = useState<string | null>(null);
@@ -22,6 +23,16 @@ export default function Home() {
   const [jerseyColor, setJerseyColor] = useState("black");
   const [customNote, setCustomNote] = useState("");
   const [eventName, setEventName] = useState("");
+
+  useEffect(() => {
+    if (sessionStorage.getItem("booth-authenticated")) {
+      setSessionChecked(true);
+    } else {
+      fetch("/api/auth/logout", { method: "POST" }).finally(() => {
+        window.location.href = "/login";
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const match = document.cookie.match(/(?:^|;\s*)event-name=([^;]*)/);
@@ -109,6 +120,8 @@ export default function Home() {
 
   const photoSkipped = !cartoonImage && !cartoonLoading && !cartoonError;
   const isAssemblyReady = (cartoonImage || photoSkipped) && profile;
+
+  if (!sessionChecked) return null;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start pt-12 p-4">

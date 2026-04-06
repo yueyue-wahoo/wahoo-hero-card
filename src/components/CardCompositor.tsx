@@ -66,7 +66,7 @@ export default function CardCompositor({
     ctx.measureText("test");
 
     // 1. Background — light gray with large diagonal chevron pattern
-    ctx.fillStyle = "#E0E0E0";
+    ctx.fillStyle = "#F0F0F0";
     ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
     drawLargeChevronPattern(ctx, CARD_WIDTH, CARD_HEIGHT);
 
@@ -105,7 +105,7 @@ export default function CardCompositor({
     // 3. Wahoo logo — rotated vertically on left side, top of logo pointed inward
     try {
       const logo = await loadImage("/wahoo-logo.png");
-      const logoHeight = 61;
+      const logoHeight = 73;
       const logoWidth = logoHeight * (logo.width / logo.height);
       ctx.save();
       // Align left edge of logo with left edge of white card (cardInset)
@@ -129,14 +129,29 @@ export default function CardCompositor({
 
     // 4. Rider name — bold black, rotated vertically on right side (top of text faces inward/left)
     if (riderName) {
+      const truncated = riderName.slice(0, 15);
+      const whiteCardY = CARD_HEIGHT * 0.43;
+      const maxNameWidth = whiteCardY - cardInset * 2; // 25px top padding + 25px gap before white card
+
+      // Measure at base size, then scale down to fit
+      let nameFontSize = 55;
+      ctx.font = `700 ${nameFontSize}px 'Inter', Arial, sans-serif`;
+      const measuredWidth = ctx.measureText(truncated).width;
+      if (measuredWidth > maxNameWidth) {
+        nameFontSize = Math.floor(nameFontSize * maxNameWidth / measuredWidth);
+      }
+      // Character-count safety net (guards against unreliable measureText)
+      const formulaMax = Math.floor(maxNameWidth / (truncated.length * 0.55));
+      nameFontSize = Math.min(nameFontSize, formulaMax);
+
       ctx.save();
-      ctx.translate(CARD_WIDTH - TEXT_MARGIN, portraitTop + 10);
+      ctx.translate(CARD_WIDTH - TEXT_MARGIN, cardInset);
       ctx.rotate(-Math.PI / 2);
       ctx.fillStyle = "#1a1a1a";
-      ctx.font = "700 55px 'Inter', Arial, sans-serif";
+      ctx.font = `700 ${nameFontSize}px 'Inter', Arial, sans-serif`;
       ctx.textAlign = "right";
       ctx.textBaseline = "middle";
-      ctx.fillText(riderName, 0, 0);
+      ctx.fillText(truncated, 0, 0);
       ctx.restore();
     }
 
@@ -281,7 +296,7 @@ function drawLargeChevronPattern(
   const gap = thickness;
   const step = thickness + gap;
 
-  ctx.fillStyle = "rgba(255,255,255,0.45)";
+  ctx.fillStyle = "rgba(180,180,180,0.35)";
 
   for (let y = -chevronDepth - step; y < height + chevronDepth + step; y += step) {
     ctx.beginPath();

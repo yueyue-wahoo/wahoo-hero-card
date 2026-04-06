@@ -27,6 +27,7 @@ export default function LoginPage() {
         setError(data.error ?? "Login failed");
         return;
       }
+      sessionStorage.setItem("booth-authenticated", "1");
       router.push("/");
     } catch {
       setError("Something went wrong. Please try again.");
