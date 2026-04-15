@@ -93,7 +93,7 @@ export default function CardPreview({ riderName, cartoonImage, profile }: Props)
       {/* Portrait area */}
       <div
         className="absolute overflow-hidden"
-        style={{ left: 24, right: 20, top: 0, height: "55%" }}
+        style={{ left: 0, right: 0, top: 0, height: "50%" }}
       >
         <img
           src={`data:image/png;base64,${cartoonImage}`}

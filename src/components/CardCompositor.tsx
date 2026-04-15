@@ -75,10 +75,10 @@ export default function CardCompositor({
 
     // 2. Portrait image — fills upper area between text margins, with top padding
     const portraitTop = 25;
-    const portraitLeft = TEXT_MARGIN + cardInset;
-    const portraitRight = CARD_WIDTH - TEXT_MARGIN - cardInset;
+    const portraitLeft = cardInset;
+    const portraitRight = CARD_WIDTH - cardInset;
     const portraitWidth = portraitRight - portraitLeft;
-    const portraitHeight = CARD_HEIGHT * 0.50 - portraitTop;
+    const portraitHeight = CARD_HEIGHT * 0.43 - portraitTop;
 
     if (cartoonImage) {
       try {
@@ -90,11 +90,11 @@ export default function CardCompositor({
         const scale = Math.max(
           portraitWidth / img.width,
           portraitHeight / img.height
-        ) * 0.974; // further 3% reduction to ensure jersey logo fits
+        ) * 0.80;
         const w = img.width * scale;
         const h = img.height * scale;
         const x = portraitLeft + (portraitWidth - w) / 2;
-        const y = portraitTop + (portraitHeight - h) / 2 - 20;
+        const y = portraitTop + (portraitHeight - h) / 2 + 17;
         ctx.drawImage(img, x, y, w, h);
         ctx.restore();
       } catch (e) {

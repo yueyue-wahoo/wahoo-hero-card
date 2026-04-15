@@ -32,10 +32,10 @@ export async function login(
 const CYCLIST_TYPES: Record<number, string> = {
   1: "Attacker",
   2: "Pursuiter",
-  3: "Rouleur",
-  4: "Sprinter",
-  5: "Time Trialist",
-  6: "Climber",
+  3: "Time Trialist",
+  4: "Climber",
+  5: "Rouleur",
+  6: "Sprinter",
 };
 
 interface WahooFitnessProfile {
@@ -95,5 +95,6 @@ export async function fetchFourDPProfile(
   }
 
   // API returns the newest profile first
+  console.log("Raw Wahoo profile:", JSON.stringify(profiles[0]));
   return mapToProfile(profiles[0]);
 }
