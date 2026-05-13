@@ -28,13 +28,18 @@ export default function AccountModeSelector({ onFinishQuiz, isLoading }: Props) 
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 p-8">
-      <h2 className="text-2xl font-bold text-white">Take your athlete profile quiz</h2>
-      <p className="font-medium text-[#5FDFFF] text-center max-w-md">
-        Take the athlete profile quiz in the Wahoo app, then come back here when you've finished it.
-      </p>
+    <div className="flex flex-col gap-6 p-4">
+      <div>
+        <h2 className="text-2xl font-bold text-white">
+          Take your athlete profile quiz
+        </h2>
+        <p className="mt-2 text-base text-gray-400">
+          Take the athlete profile quiz in the Wahoo app, then come back here
+          when you&apos;ve finished it.
+        </p>
+      </div>
 
-      <div className="w-full max-w-md space-y-4">
+      <div className="space-y-4">
         <div className="flex gap-2 bg-[#1C1C1C] rounded-xl p-1">
           <button
             onClick={() => setMode("demo")}
@@ -59,7 +64,7 @@ export default function AccountModeSelector({ onFinishQuiz, isLoading }: Props) 
         </div>
 
         {mode === "demo" ? (
-          <p className="text-sm text-gray-500 text-center">
+          <p className="text-sm text-gray-500">
             Use the demo device at the booth to take the quiz.
           </p>
         ) : (
@@ -119,40 +124,42 @@ export default function AccountModeSelector({ onFinishQuiz, isLoading }: Props) 
         )}
       </div>
 
-      <button
-        onClick={handleFinish}
-        disabled={
-          isLoading || (mode === "personal" && (!email.trim() || !password))
-        }
-        className="px-8 py-4 text-black bg-[#5FDFFF] rounded-xl text-lg font-bold hover:bg-[#47D4F7] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        {isLoading ? (
-          <span className="flex items-center gap-2">
-            <svg
-              className="animate-spin h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
-            Fetching Profile...
-          </span>
-        ) : (
-          "I've Finished My Quiz"
-        )}
-      </button>
+      <div className="flex justify-end">
+        <button
+          onClick={handleFinish}
+          disabled={
+            isLoading || (mode === "personal" && (!email.trim() || !password))
+          }
+          className="px-8 py-4 text-black bg-[#5FDFFF] rounded-xl text-lg font-bold hover:bg-[#47D4F7] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <svg
+                className="animate-spin h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Fetching profile...
+            </span>
+          ) : (
+            "I've finished my quiz"
+          )}
+        </button>
+      </div>
     </div>
   );
 }

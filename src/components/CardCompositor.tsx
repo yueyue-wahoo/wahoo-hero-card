@@ -17,6 +17,8 @@ interface Props {
   profile: FourDPProfile;
   eventName?: string;
   onReady?: () => void;
+  hideDownload?: boolean;
+  previewMaxHeight?: string;
 }
 
 export default function CardCompositor({
@@ -25,6 +27,8 @@ export default function CardCompositor({
   profile,
   eventName,
   onReady,
+  hideDownload,
+  previewMaxHeight = "70vh",
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -260,14 +264,16 @@ export default function CardCompositor({
       <canvas
         ref={canvasRef}
         className="max-w-full border rounded-lg shadow-lg"
-        style={{ maxHeight: "70vh", width: "auto" }}
+        style={{ maxHeight: previewMaxHeight, width: "auto" }}
       />
-      <button
-        onClick={downloadCard}
-        className="px-8 py-4 text-white bg-blue-600 rounded-xl text-lg font-bold hover:bg-blue-700 transition-colors"
-      >
-        Download PDF
-      </button>
+      {!hideDownload && (
+        <button
+          onClick={downloadCard}
+          className="px-8 py-4 text-white bg-blue-600 rounded-xl text-lg font-bold hover:bg-blue-700 transition-colors"
+        >
+          Download PDF
+        </button>
+      )}
     </div>
   );
 }

@@ -37,14 +37,14 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start pt-12 p-4 bg-black">
-      <header className="w-full max-w-lg mx-auto text-center mb-8">
-        <h1 className="text-4xl font-bold text-white uppercase tracking-tight">
-          Wahoo Athlete Profile
-        </h1>
-      </header>
-
+    <main className="flex flex-col items-center justify-start pt-0 px-4 pb-4">
       <div className="w-full max-w-sm mx-auto">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-white">Booth access</h2>
+          <p className="mt-2 text-base text-gray-400">
+            Enter the booth password to begin.
+          </p>
+        </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
             <label
@@ -105,16 +105,18 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
+            <p className="text-red-500 text-sm">{error}</p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-3 text-black bg-[#5FDFFF] rounded-xl text-lg font-bold hover:bg-[#47D4F7] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {loading ? "Signing in..." : "Enter"}
-          </button>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-3 text-black bg-[#5FDFFF] rounded-xl text-lg font-bold hover:bg-[#47D4F7] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {loading ? "Signing in..." : "Enter"}
+            </button>
+          </div>
         </form>
       </div>
     </main>

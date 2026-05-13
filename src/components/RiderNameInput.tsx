@@ -10,18 +10,17 @@ export default function RiderNameInput({ onSubmit }: Props) {
   const [name, setName] = useState("");
 
   return (
-    <div className="flex flex-col items-center gap-6 p-8">
-      <p className="text-lg font-medium text-[#5FDFFF]">
-        Create your athlete profile card
-      </p>
+    <div className="flex flex-col gap-6 p-4">
+      <div>
+        <h2 className="text-2xl font-bold text-white">
+          Let&apos;s start with your name
+        </h2>
+        <p className="mt-2 text-base text-gray-400">
+          We&apos;ll print this on your athlete card.
+        </p>
+      </div>
 
-      <div className="w-full max-w-md">
-        <label
-          htmlFor="rider-name"
-          className="block text-sm font-semibold text-[#5FDFFF] mb-2"
-        >
-          Enter your rider name
-        </label>
+      <div>
         <input
           id="rider-name"
           type="text"
@@ -39,10 +38,11 @@ export default function RiderNameInput({ onSubmit }: Props) {
         </p>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex justify-end">
         <button
           onClick={() => onSubmit(name)}
-          className="px-6 py-3 text-black bg-[#5FDFFF] rounded-xl text-lg font-bold hover:bg-[#47D4F7] transition-colors"
+          disabled={!name.trim()}
+          className="px-6 py-3 text-black bg-[#5FDFFF] rounded-xl text-lg font-bold hover:bg-[#47D4F7] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Next
         </button>

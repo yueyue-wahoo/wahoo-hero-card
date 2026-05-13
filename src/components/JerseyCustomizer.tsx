@@ -29,18 +29,23 @@ export default function JerseyCustomizer({
   onRetake,
 }: Props) {
   return (
-    <div className="flex flex-col items-center gap-6 p-8">
+    <div className="flex flex-col gap-6 p-4">
+      <div>
+        <h2 className="text-2xl font-bold text-white">Customize your jersey</h2>
+        <p className="mt-2 text-base text-gray-400">
+          Pick a jersey color and add any extra detail you&apos;d like.
+        </p>
+      </div>
+
       <img
         src={`data:image/jpeg;base64,${capturedPhotoBase64}`}
         alt="Your photo"
-        className="w-32 h-32 rounded-2xl object-cover shadow-md bg-[#1C1C1C]"
+        className="w-32 h-32 rounded-2xl object-cover shadow-md bg-[#1C1C1C] mx-auto"
       />
 
-      <div className="w-full space-y-3">
-        <p className="text-sm font-semibold text-[#5FDFFF] text-center">
-          Choose Your Jersey Color
-        </p>
-        <div className="flex flex-nowrap justify-center gap-1.5">
+      <div className="space-y-2">
+        <p className="text-sm font-semibold text-[#5FDFFF]">Jersey color</p>
+        <div className="flex flex-wrap gap-1.5">
           {JERSEY_COLORS.map((color) => (
             <button
               key={color.value}
@@ -57,11 +62,15 @@ export default function JerseyCustomizer({
         </div>
       </div>
 
-      <div className="w-full space-y-1">
-        <label className="text-xs font-medium text-gray-600">
-          Additional instructions (optional)
+      <div className="space-y-2">
+        <label
+          htmlFor="custom-note"
+          className="block text-sm font-semibold text-[#5FDFFF]"
+        >
+          Additional instructions <span className="font-normal text-gray-500">(optional)</span>
         </label>
         <textarea
+          id="custom-note"
           value={customNote}
           onChange={(e) => onCustomNoteChange(e.target.value)}
           maxLength={300}
@@ -71,18 +80,18 @@ export default function JerseyCustomizer({
         />
       </div>
 
-      <div className="flex gap-3 w-full">
+      <div className="flex justify-end gap-3">
         <button
           onClick={onRetake}
-          className="flex-1 px-4 py-3 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl font-medium hover:bg-[#2A2A2A] transition-colors"
+          className="px-6 py-3 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl font-medium hover:bg-[#2A2A2A] transition-colors"
         >
           Retake
         </button>
         <button
           onClick={onConfirm}
-          className="flex-1 px-4 py-3 text-black bg-[#5FDFFF] rounded-xl font-bold hover:bg-[#47D4F7] transition-colors"
+          className="px-6 py-3 text-black bg-[#5FDFFF] rounded-xl font-bold hover:bg-[#47D4F7] transition-colors"
         >
-          Generate Card
+          Generate card
         </button>
       </div>
     </div>
