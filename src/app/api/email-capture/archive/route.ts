@@ -5,16 +5,13 @@ export async function POST(request: NextRequest) {
   const eventName = request.cookies.get("event-name")?.value ?? "";
 
   try {
+    // null means the CSV was already empty/cleared — treat as success no-op
+    // so a double-click race or a stale tab doesn't surface a confusing error
+    // after the first request succeeded.
     const result = await archiveAndReset(eventName);
-    if (!result) {
-      return NextResponse.json(
-        { ok: false, error: "Nothing to archive" },
-        { status: 400 }
-      );
-    }
     return NextResponse.json({
       ok: true,
-      archivedCount: result.archivedCount,
+      archivedCount: result?.archivedCount ?? 0,
     });
   } catch (err) {
     console.error("Failed to archive emails", err);

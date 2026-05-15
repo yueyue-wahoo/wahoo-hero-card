@@ -42,13 +42,28 @@ function toCsvRow(entry: CapturedEmail): string {
   );
 }
 
+let loggedResolvedPath = false;
+function logResolvedPathOnce(resolved: string): void {
+  if (loggedResolvedPath) return;
+  loggedResolvedPath = true;
+  const isCustom = !!process.env.EMAIL_CAPTURE_CSV_PATH;
+  console.log(
+    `[email-csv] writing captured emails to: ${resolved}` +
+      (isCustom
+        ? ""
+        : " (EMAIL_CAPTURE_CSV_PATH unset — fine for local dev, but on Railway this path is ephemeral and will reset on every redeploy)")
+  );
+}
+
 export async function appendCapturedEmail(entry: CapturedEmail): Promise<void> {
   const filePath = csvPath();
+  logResolvedPathOnce(filePath);
   await fs.mkdir(path.dirname(filePath), { recursive: true });
 
   let needsHeader = false;
   try {
-    await fs.access(filePath);
+    const stats = await fs.stat(filePath);
+    if (stats.size === 0) needsHeader = true;
   } catch {
     needsHeader = true;
   }
@@ -78,7 +93,8 @@ function slugify(value: string): string {
       .toLowerCase()
       .trim()
       .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "") || "event"
+      .replace(/[^a-z0-9-]/g, "")
+      .slice(0, 60) || "event"
   );
 }
 
