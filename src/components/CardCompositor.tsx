@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, ReactNode } from "react";
 import jsPDF from "jspdf";
 import { FourDPProfile } from "@/types";
 import {
@@ -17,6 +17,9 @@ interface Props {
   profile: FourDPProfile;
   eventName?: string;
   onReady?: () => void;
+  hideDownload?: boolean;
+  previewMaxHeight?: string;
+  actionSlot?: ReactNode;
 }
 
 export default function CardCompositor({
@@ -25,6 +28,9 @@ export default function CardCompositor({
   profile,
   eventName,
   onReady,
+  hideDownload,
+  previewMaxHeight = "70vh",
+  actionSlot,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -260,14 +266,23 @@ export default function CardCompositor({
       <canvas
         ref={canvasRef}
         className="max-w-full border rounded-lg shadow-lg"
-        style={{ maxHeight: "70vh", width: "auto" }}
+        style={{ maxHeight: previewMaxHeight, width: "auto" }}
       />
-      <button
-        onClick={downloadCard}
-        className="px-8 py-4 text-white bg-blue-600 rounded-xl text-lg font-bold hover:bg-blue-700 transition-colors"
-      >
-        Download PDF
-      </button>
+      {!hideDownload && (
+        <div
+          className={`flex w-full items-center ${
+            actionSlot ? "justify-between" : "justify-center"
+          }`}
+        >
+          <button
+            onClick={downloadCard}
+            className="px-8 py-4 text-white bg-blue-600 rounded-xl text-lg font-bold hover:bg-blue-700 transition-colors"
+          >
+            Download PDF
+          </button>
+          {actionSlot}
+        </div>
+      )}
     </div>
   );
 }

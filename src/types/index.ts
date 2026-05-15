@@ -22,6 +22,7 @@ export type AppStep =
   | "customize"
   | "quiz"
   | "assembling"
+  | "email"
   | "done";
 
 export interface CardData {

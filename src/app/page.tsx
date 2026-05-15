@@ -7,6 +7,7 @@ import WebcamCapture from "@/components/WebcamCapture";
 import JerseyCustomizer from "@/components/JerseyCustomizer";
 import AccountModeSelector from "@/components/AccountModeSelector";
 import CardCompositor from "@/components/CardCompositor";
+import EmailCollectionStep from "@/components/EmailCollectionStep";
 
 export default function Home() {
   const [sessionChecked, setSessionChecked] = useState(false);
@@ -23,6 +24,7 @@ export default function Home() {
   const [jerseyColor, setJerseyColor] = useState("black");
   const [customNote, setCustomNote] = useState("");
   const [eventName, setEventName] = useState("");
+  const [wahooEmail, setWahooEmail] = useState<string | null>(null);
 
   useEffect(() => {
     if (sessionStorage.getItem("booth-authenticated")) {
@@ -93,6 +95,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to fetch profile");
       setProfile(data);
+      setWahooEmail(mode === "personal" ? credentials?.email ?? null : null);
       setStep("assembling");
     } catch (err) {
       setProfileError(
@@ -116,6 +119,7 @@ export default function Home() {
     setPendingPhotoBase64(null);
     setJerseyColor("black");
     setCustomNote("");
+    setWahooEmail(null);
   };
 
   const photoSkipped = !cartoonImage && !cartoonLoading && !cartoonError;
@@ -124,13 +128,7 @@ export default function Home() {
   if (!sessionChecked) return null;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start pt-12 p-4">
-      <header className="w-full max-w-lg mx-auto text-center mb-8">
-        <h1 className="text-4xl font-bold text-white uppercase tracking-tight">
-          Wahoo Athlete Profile
-        </h1>
-      </header>
-
+    <main className="flex flex-col items-center justify-start pt-0 px-4 pb-4">
       <div className="w-full max-w-lg mx-auto">
         {step === "name" && <RiderNameInput onSubmit={handleNameSubmit} />}
 
@@ -230,9 +228,10 @@ export default function Home() {
                 cartoonImage={cartoonImage}
                 profile={profile}
                 eventName={eventName}
+                hideDownload
                 onReady={() => {
                   setCardReady(true);
-                  setStep("done");
+                  setStep("email");
                 }}
               />
             )}
@@ -245,26 +244,53 @@ export default function Home() {
           </div>
         )}
 
+        {step === "email" && profile && (
+          <EmailCollectionStep
+            defaultEmail={wahooEmail}
+            riderName={riderName}
+            cartoonImage={cartoonImage}
+            profile={profile}
+            eventName={eventName}
+            onSubmitted={() => {
+              setStep("done");
+            }}
+          />
+        )}
+
         {step === "done" && profile && (
-          <div className="flex flex-col items-center gap-6 p-8">
+          <div className="flex flex-col gap-6 p-4">
             <h2 className="text-2xl font-bold text-white">
-              Your Card is Ready!
+              Your card is ready!
             </h2>
 
-            <CardCompositor
-              riderName={riderName}
-              cartoonImage={cartoonImage}
-              profile={profile}
-              eventName={eventName}
-            />
-
-            <div className="flex gap-4">
-              <button
-                onClick={handleStartOver}
-                className="px-6 py-3 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl text-lg font-medium hover:bg-[#2A2A2A] transition-colors"
-              >
-                Start Over
-              </button>
+            <div className="mx-auto">
+              <CardCompositor
+                riderName={riderName}
+                cartoonImage={cartoonImage}
+                profile={profile}
+                eventName={eventName}
+                actionSlot={
+                  <button
+                    onClick={handleStartOver}
+                    aria-label="Start over"
+                    title="Start over"
+                    className="flex items-center justify-center p-4 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl hover:bg-[#2A2A2A] transition-colors"
+                  >
+                    <svg
+                      className="h-7 w-7"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="1 4 1 10 7 10" />
+                      <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                    </svg>
+                  </button>
+                }
+              />
             </div>
           </div>
         )}

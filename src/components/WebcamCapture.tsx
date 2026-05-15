@@ -36,13 +36,15 @@ export default function WebcamCapture({ onCapture }: Props) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 p-8">
-      <h2 className="text-2xl font-bold text-white">Take Your Photo</h2>
-      <p className="font-medium text-[#5FDFFF]">
-        Position yourself in the frame for your trading card portrait
-      </p>
+    <div className="flex flex-col gap-6 p-4">
+      <div>
+        <h2 className="text-2xl font-bold text-white">Take your photo</h2>
+        <p className="mt-2 text-base text-gray-400">
+          Position yourself in the frame for your athlete card portrait.
+        </p>
+      </div>
 
-      <div className="relative w-full max-w-md aspect-square rounded-2xl overflow-hidden bg-black">
+      <div className="relative w-full max-w-md aspect-square rounded-2xl overflow-hidden bg-black mx-auto">
         {capturedImage ? (
           <img
             src={capturedImage}
@@ -68,7 +70,7 @@ export default function WebcamCapture({ onCapture }: Props) {
       </div>
 
       {capturedImage ? (
-        <div className="flex gap-4">
+        <div className="flex justify-end gap-3">
           <button
             onClick={retake}
             className="px-6 py-3 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl text-lg font-medium hover:bg-[#2A2A2A] transition-colors"
@@ -79,16 +81,18 @@ export default function WebcamCapture({ onCapture }: Props) {
             onClick={usePhoto}
             className="px-6 py-3 text-black bg-[#5FDFFF] rounded-xl text-lg font-bold hover:bg-[#47D4F7] transition-colors"
           >
-            Use This Photo
+            Use this photo
           </button>
         </div>
       ) : (
-        <button
-          onClick={capture}
-          className="px-8 py-4 text-white bg-red-600 rounded-full text-xl font-bold hover:bg-red-700 transition-colors shadow-lg"
-        >
-          Take Photo
-        </button>
+        <div className="flex justify-end">
+          <button
+            onClick={capture}
+            className="px-8 py-4 text-white bg-red-600 rounded-full text-xl font-bold hover:bg-red-700 transition-colors shadow-lg"
+          >
+            Take photo
+          </button>
+        </div>
       )}
     </div>
   );
