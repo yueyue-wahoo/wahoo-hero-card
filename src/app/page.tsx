@@ -259,14 +259,9 @@ export default function Home() {
 
         {step === "done" && profile && (
           <div className="flex flex-col gap-6 p-4">
-            <div>
-              <h2 className="text-2xl font-bold text-white">
-                Your card is ready
-              </h2>
-              <p className="mt-2 text-base text-gray-400">
-                Download the PDF below and bring it to the print station.
-              </p>
-            </div>
+            <h2 className="text-2xl font-bold text-white">
+              Your card is ready!
+            </h2>
 
             <div className="mx-auto">
               <CardCompositor
@@ -274,16 +269,28 @@ export default function Home() {
                 cartoonImage={cartoonImage}
                 profile={profile}
                 eventName={eventName}
+                actionSlot={
+                  <button
+                    onClick={handleStartOver}
+                    aria-label="Start over"
+                    title="Start over"
+                    className="flex items-center justify-center p-4 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl hover:bg-[#2A2A2A] transition-colors"
+                  >
+                    <svg
+                      className="h-7 w-7"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="1 4 1 10 7 10" />
+                      <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                    </svg>
+                  </button>
+                }
               />
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                onClick={handleStartOver}
-                className="px-6 py-3 text-gray-400 bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl text-lg font-medium hover:bg-[#2A2A2A] transition-colors"
-              >
-                Start over
-              </button>
             </div>
           </div>
         )}
