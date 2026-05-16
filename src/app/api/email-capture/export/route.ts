@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { readCapturedEmailsCsv } from "@/lib/email-csv";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   const contents = await readCapturedEmailsCsv();
 
