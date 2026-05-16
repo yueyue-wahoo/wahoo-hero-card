@@ -75,7 +75,11 @@ export async function appendCapturedEmail(entry: CapturedEmail): Promise<void> {
 export async function readCapturedEmailsCsv(): Promise<string | null> {
   try {
     return await fs.readFile(csvPath(), "utf8");
-  } catch {
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException)?.code;
+    if (code !== "ENOENT") {
+      console.error(`[email-csv] failed to read ${csvPath()}:`, err);
+    }
     return null;
   }
 }
